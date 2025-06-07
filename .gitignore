@@ -1,0 +1,6 @@
+# Ignore secrets and environments
+.env
+service-account.json
+career_env/
+__pycache__/
+*.pyc
