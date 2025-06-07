@@ -1,7 +1,6 @@
 import streamlit as st
 import sys
 import json
-import os
 import cohere
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -33,7 +32,7 @@ client = cohere.Client(cohere_api_key)
 # Retrieve Google Service Account credentials
 try:
     raw_secrets = st.secrets["google"]["gcp_service_account"]
-    fixed_secrets = raw_secrets.replace("\\n", "\n")  # Fix newline characters
+    fixed_secrets = raw_secrets.replace("\\n", "\n")  # Convert escaped newlines
     service_account_info = json.loads(fixed_secrets)
 
     creds = service_account.Credentials.from_service_account_info(
