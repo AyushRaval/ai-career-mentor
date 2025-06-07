@@ -38,6 +38,11 @@ def upload_to_drive(file, mimetype=None):
         # Determine MIME type: use file.type if available else mimetype param else default
         actual_mimetype = getattr(file, "type", None) or mimetype or "application/octet-stream"
 
+        # Ensure file is not empty
+        if file is None or file.read() == b"":
+            st.error("🚨 Error: Uploaded file is empty.")
+            return None
+
         # Reset file pointer before reading
         file.seek(0)
 
@@ -66,6 +71,9 @@ def upload_to_drive(file, mimetype=None):
         # Return view link
         return f"https://drive.google.com/file/d/{file_id}/view"
 
+    except json.JSONDecodeError:
+        st.error("🚨 Error: Invalid JSON format in Streamlit secrets.")
+        return None
     except Exception as e:
         st.error(f"🚨 Error uploading file: {str(e)}")
         return None
