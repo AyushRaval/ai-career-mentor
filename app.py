@@ -32,13 +32,19 @@ client = cohere.Client(cohere_api_key)
 
 # Retrieve Google Service Account credentials
 try:
-    service_account_info = json.loads(st.secrets["google"]["gcp_service_account"])
+    raw_secrets = st.secrets["google"]["gcp_service_account"]
+    fixed_secrets = raw_secrets.replace("\\n", "\n")  # Fix newline characters
+    service_account_info = json.loads(fixed_secrets)
+
     creds = service_account.Credentials.from_service_account_info(
         service_account_info, scopes=["https://www.googleapis.com/auth/drive.file"]
     )
     drive_service = build("drive", "v3", credentials=creds)
 except KeyError:
     st.error("🚨 Google Service Account credentials missing in Streamlit Secrets.")
+    st.stop()
+except json.JSONDecodeError:
+    st.error("🚨 Error parsing Google Service Account JSON. Check formatting in Streamlit Secrets.")
     st.stop()
 
 uploaded_file = st.file_uploader("📄 Upload your resume (PDF format)", type=["pdf"])
