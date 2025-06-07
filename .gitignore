@@ -4,3 +4,4 @@ service-account.json
 career_env/
 __pycache__/
 *.pyc
+.streamlit/secrets.toml
